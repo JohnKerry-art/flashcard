@@ -4,108 +4,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flashcard App</title>
-</head>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        background-color: #f4f4f4;
-    }
-    
-    .container {
-        margin: 50px auto;
-        width: 300px;
-    }
-    
-    .flashcard {
-        width: 100%;
-        height: 200px;
-        background: white;
-        box-shadow: 2px 2px 10px gray;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 10px;
-        cursor: pointer;
-        position: relative;
-    }
-    
-    .flashcard .front, .flashcard .back {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-    }
-    
-    .flashcard .back {
-        display: none;
-    }
-    
-    button {
-        margin-top: 20px;
-        padding: 10px;
-        border: none;
-        background: blue;
-        color: white;
-        font-size: 18px;
-        cursor: pointer;
-    }
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            margin: 50px auto;
+            width: 300px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 200px;
+            perspective: 1000px;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px gray;
+        }
+
+        .front {
+            background: #edf1f3;
+            color: rgb(59, 20, 109);
+        }
+
+        .back {
+            background: #0fb964;
+            color: rgb(235, 238, 235);
+            transform: rotateY(180deg);
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            border: none;
+            background: blue;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
     </style>
-    
+</head>
 <body>
     <div class="container">
-        <h1></h1>
+        <h1>Flashcard</h1>
         <div class="flashcard" onclick="flipCard()">
-            <div class="front" id="question">Click to Flip</div>
-            <div class="back" id="answer">Definition</div>
+            <div class="card" id="card">
+                <div class="front" id="question">Click to Flip</div>
+                <div class="back" id="answer">Definition</div>
+            </div>
         </div>
         <button onclick="prevCard()">Previous</button>
         <button onclick="nextCard()">Next</button>
     </div>
-    <script>let flashcards = [
-        { question: "What is an Algorithm?", answer: "A step-by-step procedure to solve a problem." },
-        { question: "What is AI?", answer: "Artificial Intelligence." },
-        { question: "What is a Data Structure?", answer: "A way to store and organize data efficiently." },
-        { question: "What does CPU stand for?",answer: "Central Processing Unit"}
-    ];
-    
-    let currentIndex = 0;
-    let flipped = false;
-    
-    function updateCard() {
-        document.getElementById("question").innerText = flashcards[currentIndex].question;
-        document.getElementById("answer").innerText = flashcards[currentIndex].answer;
-        document.getElementById("answer").style.display = "none";
-        document.getElementById("question").style.display = "flex";
-        flipped = false;
-    }
-    
-    function flipCard() {
-        let front = document.getElementById("question");
-        let back = document.getElementById("answer");
-        if (!flipped) {
-            front.style.display = "none";
-            back.style.display = "flex";
-        } else {
-            front.style.display = "flex";
-            back.style.display = "none";
+    <script>
+        let flashcards = [
+            { question: "What is an Algorithm?", answer: "A step-by-step procedure to solve a problem." },
+            { question: "What is AI?", answer: "Artificial Intelligence." },
+            { question: "What is a Data Structure?", answer: "A way to store and organize data efficiently." },
+            { question: "What does CPU stand for?", answer:"Central Processing Unit"},
+            { question: "What is the full form of HTTP?",answer:"Hypertext Transfer Protocol"}
+        ];
+
+        let currentIndex = 0;
+        let isFlipped = false;
+
+        function updateCard() {
+            document.getElementById("question").innerText = flashcards[currentIndex].question;
+            document.getElementById("answer").innerText = flashcards[currentIndex].answer;
+            document.getElementById("card").classList.remove("flipped");
+            isFlipped = false;
         }
-        flipped = !flipped;
-    }
-    
-    function nextCard() {
-        currentIndex = (currentIndex + 1) % flashcards.length;
+
+        function flipCard() {
+            let card = document.getElementById("card");
+            if (isFlipped) {
+                card.classList.remove("flipped");
+            } else {
+                card.classList.add("flipped");
+            }
+            isFlipped = !isFlipped;
+        }
+
+        function nextCard() {
+            currentIndex = (currentIndex + 1) % flashcards.length;
+            updateCard();
+        }
+
+        function prevCard() {
+            currentIndex = (currentIndex - 1 + flashcards.length) % flashcards.length;
+            updateCard();
+        }
+
         updateCard();
-    }
-    
-    function prevCard() {
-        currentIndex = (currentIndex - 1 + flashcards.length) % flashcards.length;
-        updateCard();
-    }
-    
-    updateCard();</script>
+    </script>
 </body>
 </html>
